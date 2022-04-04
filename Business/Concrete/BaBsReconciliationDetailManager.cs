@@ -1,5 +1,11 @@
 ﻿using Business.Abstract;
+using Business.Constans;
+using Core.Aspects.Autofac.Transaction;
+using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
+using Entities.Concrete;
+using ExcelDataReader;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +21,69 @@ namespace Business.Concrete
         public BaBsReconciliationDetailManager(IBaBsReconciliationDetailDal baBsReconciliationDetailDal)
         {
             _baBsReconciliationDetailDal = baBsReconciliationDetailDal;
+        }
+
+        public IResult Add(BaBsReconciliationDetail babsReconciliationDetail)
+        {
+            _baBsReconciliationDetailDal.Add(babsReconciliationDetail);
+            return new SuccessResult(Messages.AddedBaBsReconciliationDetail);
+        }
+
+        [TransactionScopeAspect]
+        public IResult AddToExcel(string filePath, int babsReconciliationId)
+        {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    while (reader.Read())
+                    {
+                        string description = reader.GetString(1);
+
+                        if (description != "Açıklama" && description != null)
+                        {
+                            DateTime date = reader.GetDateTime(0);
+                            double amount = reader.GetDouble(2);
+
+                            BaBsReconciliationDetail baBsReconciliationDetail = new BaBsReconciliationDetail()
+                            {
+                                BaBsReconciliationId = babsReconciliationId,
+                                Date = date,
+                                Description = description,
+                                Amount = Convert.ToDecimal(amount)
+                            };
+
+                            _baBsReconciliationDetailDal.Add(baBsReconciliationDetail);
+                        }
+                    }
+                }
+            }
+
+            return new SuccessResult(Messages.AddedAccountReconciliation);
+        }
+
+        public IResult Delete(BaBsReconciliationDetail babsReconciliationDetail)
+        {
+            _baBsReconciliationDetailDal.Delete(babsReconciliationDetail);
+            return new SuccessResult(Messages.DeletedBaBsReconciliationDetail);
+        }
+
+        public IDataResult<BaBsReconciliationDetail> GetById(int id)
+        {
+            return new SuccesDataResult<BaBsReconciliationDetail>(_baBsReconciliationDetailDal.Get(p => p.Id == id));
+        }
+
+        public IDataResult<List<BaBsReconciliationDetail>> GetList(int babsReconciliationId)
+        {
+            return new SuccesDataResult<List<BaBsReconciliationDetail>>(_baBsReconciliationDetailDal.GetList(p => p.BaBsReconciliationId == babsReconciliationId));
+        }
+
+        public IResult Update(BaBsReconciliationDetail babsReconciliationDetail)
+        {
+            _baBsReconciliationDetailDal.Update(babsReconciliationDetail);
+            return new SuccessResult(Messages.UpdatedBaBsReconciliationDetail);
         }
     }
 }

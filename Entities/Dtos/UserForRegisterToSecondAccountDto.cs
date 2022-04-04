@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Abstract
+namespace Entities.Dtos
 {
-    public interface IBaBsRecoinciliationService
+    public class UserForRegisterToSecondAccountDto : UserForRegister
     {
+        public int CompanyId { get; set; }
     }
 }

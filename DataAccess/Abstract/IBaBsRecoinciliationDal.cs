@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstract
 {
-    public interface IBaBsRecoinciliationDal : IEntityRepository<BaBsRecoinciliation>
+    public interface IBaBsRecoinciliationDal : IEntityRepository<BaBsReconciliation>
     {
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Concrete
 {
-    public class BaBsRecoinciliation : IEntity
+    public class BaBsReconciliation : IEntity
     {
         public int Id { get; set; }
         public int CompanyId { get; set; }
@@ -18,7 +18,7 @@ namespace Entities.Concrete
         public int Quantity { get; set; }
         public decimal Total { get; set; }
         public bool IsSendEmail { get; set; }
-        public DateTime? SenEmailDate { get; set; }
+        public DateTime? SendEmailDate { get; set; }
         public bool? IsEmailRead { get; set; }
         public DateTime? EmailReadDate { get; set; }
         public bool? IsResultSucceed { get; set; }

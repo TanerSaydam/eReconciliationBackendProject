@@ -18,7 +18,7 @@ namespace DataAccess.Concrete.EntityFramework.Context
 
         public DbSet<AccountReconciliationDetail> AccountReconciliationDetails { get; set; }
         public DbSet<AccountReconciliation> AccountReconciliations { get; set; }
-        public DbSet<BaBsRecoinciliation> BaBsRecoinciliations { get; set; }
+        public DbSet<BaBsReconciliation> BaBsReconciliations { get; set; }
         public DbSet<BaBsReconciliationDetail> BaBsReconciliationDetails { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Currency> Currencies { get; set; }
@@ -26,8 +26,9 @@ namespace DataAccess.Concrete.EntityFramework.Context
         public DbSet<MailParameter> MailParameters { get; set; }
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<UserCompany> UserCompany { get; set; }
+        public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }        
+        public DbSet<MailTemplate> MailTemplates { get; set; }        
     }
 }
 
