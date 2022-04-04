@@ -27,8 +27,10 @@ namespace Business.Concrete
         private readonly IMailParameterService _mailParameterService;
         private readonly IMailService _mailService;
         private readonly IMailTemplateService _mailTemplateService;
+        private readonly IUserOperationClaimService _userOperarionClaimService;
+        private readonly IOperationClaimService _OperarionClaimService;
    
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper, ICompanyService companyService, IMailParameterService mailParameterService, IMailService mailService, IMailTemplateService mailTemplateService)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, ICompanyService companyService, IMailParameterService mailParameterService, IMailService mailService, IMailTemplateService mailTemplateService, IUserOperationClaimService userOperarionClaimService, IOperationClaimService OperarionClaimService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
@@ -36,6 +38,8 @@ namespace Business.Concrete
             _mailParameterService = mailParameterService;
             _mailService = mailService;
             _mailTemplateService = mailTemplateService;
+            _userOperarionClaimService = userOperarionClaimService;
+            _OperarionClaimService = OperarionClaimService;
         }
 
         public IResult CompanyExists(Company company)

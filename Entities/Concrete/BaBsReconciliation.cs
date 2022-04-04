@@ -24,5 +24,6 @@ namespace Entities.Concrete
         public bool? IsResultSucceed { get; set; }
         public DateTime? ResultDate { get; set; }
         public string? ResultNote { get; set; }
+        public string? Guid { get; set; }
     }
 }

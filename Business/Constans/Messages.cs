@@ -48,5 +48,13 @@ namespace Business.Constans
         public static string AddedBaBsReconciliationDetail = "BaBs detay kaydı başarıyla eklendi";
         public static string UpdatedBaBsReconciliationDetail = "BaBs detay kaydı başarıyla güncellendi";
         public static string DeletedBaBsReconciliationDetail = "BaBs detay başarıyla silindi";
+
+        public static string AddedOperationClaim = "Yetki başarıyla eklendi";
+        public static string UpdatedOperationClaim = "Yetki başarıyla güncellendi";
+        public static string DeletedOperationClaim = "Yetki başarıyla silindi";
+
+        public static string AddedUserOperationClaim = "Kullanıcıya yetki başarıyla eklendi";
+        public static string UpdatedUserOperationClaim = "Kullanıcıya yetki başarıyla güncellendi";
+        public static string DeletedUserOperationClaim = "Kullanıcıya yetki başarıyla silindi";
     }
 }
