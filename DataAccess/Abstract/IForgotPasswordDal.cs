@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Abstract
 {
-    public interface ICurrencyAccountDal : IEntityRepository<CurrencyAccount>
+    public interface IForgotPasswordDal : IEntityRepository<ForgotPassword>
     {
-        bool CheckCurrencyAccountReconciliations(int currencyAccountId);
     }
 }

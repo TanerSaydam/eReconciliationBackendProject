@@ -29,6 +29,8 @@ namespace DataAccess.Concrete.EntityFramework.Context
         public DbSet<UserCompany> UserCompanies { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }        
         public DbSet<MailTemplate> MailTemplates { get; set; }        
+        public DbSet<TermsandCondition> TermsandConditions { get; set; }        
+        public DbSet<ForgotPassword> ForgotPasswords { get; set; }        
     }
 }
 

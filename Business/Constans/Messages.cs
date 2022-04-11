@@ -20,6 +20,8 @@ namespace Business.Constans
         public static string UserMailConfirmSuccessful = "Mailiniz başarıyla onaylandı";
         public static string MailAlreadyConfirm = "Mailiniz zaten onaylı. Tekrar gönderim yapılmadı";
         public static string MailConfirmTimeHasNotExpired = "Mail onayını 5 dakikada bir gönderebilirsiniz";
+        public static string UpdatedUser = "Kullanıcı başarıyla güncellendi";
+        public static string ChangedPassword = "Şifre başarıyla değiştirildi";
 
         public static string MailParameterUpdated = "Mail parameterleri başarıyla güncellendi";
         public static string MailSendSucessful = "Mail başarıyla gönderildi";
@@ -32,6 +34,7 @@ namespace Business.Constans
         public static string AddedCurrencyAccount = "Cari kaydı başarıyla eklendi";
         public static string UpdatedCurrencyAccount = "Cari kaydı başarıyla güncellendi";
         public static string DeletedCurrencyAccount = "Cari kaydı başarıyla silindi";
+        public static string AccountHaveRecontiliations = "Mutabakat işlemi olan cari kaydı silemezsiniz. İsterseniz cariyi pasife çekebilirsiniz.";
 
         public static string AddedAccountReconciliation = "Cari mutabakat kaydı başarıyla eklendi";
         public static string UpdatedAccountReconciliation = "Cari mutabakat kaydı başarıyla güncellendi";
@@ -56,5 +59,7 @@ namespace Business.Constans
         public static string AddedUserOperationClaim = "Kullanıcıya yetki başarıyla eklendi";
         public static string UpdatedUserOperationClaim = "Kullanıcıya yetki başarıyla güncellendi";
         public static string DeletedUserOperationClaim = "Kullanıcıya yetki başarıyla silindi";
+
+        public static string UpdateTermsAndConditions = "Sözleşme başarıyla güncellendi";
     }
 }

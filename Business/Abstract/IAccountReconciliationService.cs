@@ -18,6 +18,7 @@ namespace Business.Abstract
         IDataResult<AccountReconciliation> GetById(int id);
         IDataResult<AccountReconciliation> GetByCode(string code);
         IDataResult<List<AccountReconciliation>> GetList(int companyId);
+        IDataResult<List<AccountReconciliation>> GetListByCurrencyAccountId(int currencyAccountId);
         IDataResult<List<AccountReconciliationDto>> GetListDto(int companyId);
         IResult SendReconciliationMail(AccountReconciliationDto accountReconciliationDto);
 

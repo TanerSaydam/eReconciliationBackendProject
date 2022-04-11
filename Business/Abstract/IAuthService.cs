@@ -18,11 +18,14 @@ namespace Business.Abstract
         IDataResult<User> Login(UserForLogin userForLogin);
         IDataResult<User> GetByMailConfirmValue(string value);
         IDataResult<User> GetById(int id);
+        IDataResult<User> GetByEmail(string email);
         IResult UserExists(string email);
         IResult Update(User user);
+        IResult ChangePassword(User user);
         IResult CompanyExists(Company company);
-        IResult SendConfirmEmail(User user);
+        IResult SendConfirmEmailAgain(User user);        
         IDataResult<AccessToken> CreateAccessToken(User user, int companyId);
         IDataResult<UserCompany> GetCompany(int userId);
+        IResult SendForgotPasswordEmail(User user, string value);
     }
 }

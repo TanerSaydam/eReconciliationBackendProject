@@ -55,8 +55,9 @@ namespace Business.Concrete
         public IDataResult<AccessToken> CreateAccessToken(User user, int companyId)
         {
             var claims = _userService.GetClaims(user, companyId);
-            var accessToken = _tokenHelper.CreateToken(user, claims, companyId);
-            return new SuccesDataResult<AccessToken>(accessToken);
+            var company = _companyService.GetById(companyId).Data;
+            var accessToken = _tokenHelper.CreateToken(user, claims, companyId, company.Name);
+            return new SuccesDataResult<AccessToken>(accessToken, Messages.SuccessfulLogin);
         }
 
         public IDataResult<User> GetById(int id)
@@ -134,7 +135,7 @@ namespace Business.Concrete
         {
             string subject = "Kullanıcı Kayıt Onay Maili";
             string body = "Kullanıcınız sisteme kayıt oldu. Kaydınızı tamamlamak için aşağıdaki linke tıklamanız gerekmektedir.";
-            string link = "https://localhost:7220/api/Auth/confirmuser?value=" + user.MailConfirmValue;
+            string link = "http://localhost:4200/registerConfirm/" + user.MailConfirmValue;
             string linkDescription = "Kaydı Onaylamak için Tıklayın";
 
             var mailTemplate = _mailTemplateService.GetByTemplateName("Kayıt", 4);
@@ -189,7 +190,7 @@ namespace Business.Concrete
         public IResult Update(User user)
         {
             _userService.Update(user);
-            return new SuccessResult(Messages.UserMailConfirmSuccessful);
+            return new SuccessResult(Messages.UpdatedUser);
         }
 
         public IResult UserExists(string email)
@@ -201,7 +202,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        IResult IAuthService.SendConfirmEmail(User user)
+        public IResult SendConfirmEmailAgain(User user)
         {
             if (user.MailConfirm == true)
             {
@@ -230,6 +231,46 @@ namespace Business.Concrete
         public IDataResult<UserCompany> GetCompany(int userId)
         {
             return new SuccesDataResult<UserCompany>(_companyService.GetCompany(userId).Data);
+        }
+
+        public IDataResult<User> GetByEmail(string email)
+        {
+            return new SuccesDataResult<User>(_userService.GetByMail(email));
+        }
+
+        public IResult SendForgotPasswordEmail(User user, string value)
+        {
+            string subject = "Şifremi Unuttum";
+            string body = "e-Mutabakat sitemizden şifrenizi unuttuğunuzu belirttiniz. Aşağıdaki linkte tıklayarak şifrenizi yeniden belirleyebilirsiniz. Linkin 1 saat süresi vardır. Süre sonunda kullanılamaz. İyi günler dileriz.";
+            string link = "http://localhost:4200/forgot-password/" + value;
+            string linkDescription = "Şifrenizi Tekrar Belirlemek için Tıklayın";
+
+            var mailTemplate = _mailTemplateService.GetByTemplateName("Kayıt", 4);
+            string templateBody = mailTemplate.Data.Value;
+            templateBody = templateBody.Replace("{{title}}", subject);
+            templateBody = templateBody.Replace("{{message}}", body);
+            templateBody = templateBody.Replace("{{link}}", link);
+            templateBody = templateBody.Replace("{{linkDescription}}", linkDescription);
+
+
+            var mailParameter = _mailParameterService.Get(4);
+            SendMailDto sendMailDto = new SendMailDto()
+            {
+                mailParameter = mailParameter.Data,
+                email = user.Email,
+                subject = subject,
+                body = templateBody
+            };
+
+            _mailService.SendMail(sendMailDto);            
+
+            return new SuccessResult(Messages.MailSendSucessful);
+        }
+
+        public IResult ChangePassword(User user)
+        {
+            _userService.Update(user);
+            return new SuccessResult(Messages.ChangedPassword);
         }
     }
 }

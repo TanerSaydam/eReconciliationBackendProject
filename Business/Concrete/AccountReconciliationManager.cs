@@ -130,6 +130,14 @@ namespace Business.Concrete
         [PerformanceAspect(3)]
         [SecuredOperation("AccountReconciliation.GetList,Admin")]
         [CacheAspect(60)]
+        public IDataResult<List<AccountReconciliation>> GetListByCurrencyAccountId(int currencyAccountId)
+        {
+            return new SuccesDataResult<List<AccountReconciliation>>(_accountReconciliationDal.GetList(p => p.CurrencyAccountId == currencyAccountId));
+        }
+
+        [PerformanceAspect(3)]
+        [SecuredOperation("AccountReconciliation.GetList,Admin")]
+        [CacheAspect(60)]
         public IDataResult<List<Entities.Dtos.AccountReconciliationDto>> GetListDto(int companyId)
         {
             return new SuccesDataResult<List<AccountReconciliationDto>>(_accountReconciliationDal.GetAllDto(companyId));
