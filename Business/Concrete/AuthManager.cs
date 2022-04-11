@@ -28,9 +28,9 @@ namespace Business.Concrete
         private readonly IMailService _mailService;
         private readonly IMailTemplateService _mailTemplateService;
         private readonly IUserOperationClaimService _userOperarionClaimService;
-        private readonly IOperationClaimService _OperarionClaimService;
+        private readonly IOperationClaimService _operarionClaimService;
    
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper, ICompanyService companyService, IMailParameterService mailParameterService, IMailService mailService, IMailTemplateService mailTemplateService, IUserOperationClaimService userOperarionClaimService, IOperationClaimService OperarionClaimService)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, ICompanyService companyService, IMailParameterService mailParameterService, IMailService mailService, IMailTemplateService mailTemplateService, IUserOperationClaimService userOperarionClaimService, IOperationClaimService operarionClaimService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
@@ -39,7 +39,7 @@ namespace Business.Concrete
             _mailService = mailService;
             _mailTemplateService = mailTemplateService;
             _userOperarionClaimService = userOperarionClaimService;
-            _OperarionClaimService = OperarionClaimService;
+            _operarionClaimService = operarionClaimService;
         }
 
         public IResult CompanyExists(Company company)
@@ -126,6 +126,23 @@ namespace Business.Concrete
                 PasswordSalt = user.PasswordSalt
             };
 
+            var operationClaims = _operarionClaimService.GetList().Data;
+            foreach (var operationClaim in operationClaims)
+            {
+                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete" && !operationClaim.Name.Contains("UserOperationClaim"))
+                {
+                    UserOperationClaim userOperation = new UserOperationClaim()
+                    {
+                        CompanyId = company.Id,
+                        AddedAt = DateTime.Now,
+                        IsActive = true,
+                        OperationClaimId = operationClaim.Id,
+                        UserId = user.Id
+                    };
+                    _userOperarionClaimService.Add(userOperation);
+                }                
+            }
+
             SendConfirmEmail(user);
 
             return new SuccesDataResult<UserCompanyDto>(userCompanyDto, Messages.UserRegistered);
@@ -181,6 +198,23 @@ namespace Business.Concrete
             _userService.Add(user);
 
             _companyService.UserCompanyAdd(user.Id, companyId);
+
+            var operationClaims = _operarionClaimService.GetList().Data;
+            foreach (var operationClaim in operationClaims)
+            {
+                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete" && !operationClaim.Name.Contains("UserOperationClaim"))
+                {
+                    UserOperationClaim userOperation = new UserOperationClaim()
+                    {
+                        CompanyId = companyId,
+                        AddedAt = DateTime.Now,
+                        IsActive = true,
+                        OperationClaimId = operationClaim.Id,
+                        UserId = user.Id
+                    };
+                    _userOperarionClaimService.Add(userOperation);
+                }
+            }
 
             SendConfirmEmail(user);
 

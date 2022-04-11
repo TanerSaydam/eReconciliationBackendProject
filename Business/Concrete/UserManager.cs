@@ -1,11 +1,16 @@
 ﻿using Business.Abstract;
 using Business.BusinessAcpects;
+using Business.Constans;
 using Business.ValidaitonRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Aspects.Caching;
 using Core.Aspects.Performance;
 using Core.Entities.Concrete;
+using Core.Utilities.Hashing;
+using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
+using Entities.Dtos;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -36,6 +41,12 @@ namespace Business.Concrete
         {
             return _userDal.Get(u=> u.Id == id);
         }
+        
+        [CacheAspect(60)]
+        public IDataResult<User> GetByIdToResult(int id)
+        {
+            return new SuccesDataResult<User>(_userDal.Get(u => u.Id == id));
+        }
 
         [CacheAspect(60)]
         public User GetByMail(string email)
@@ -55,11 +66,37 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
+        [SecuredOperation("User.GetList,Admin")]
+        public IDataResult<List<UserCompanyDtoForList>> GetUserList(int companyId)
+        {
+            return new SuccesDataResult<List<UserCompanyDtoForList>>(_userDal.GetUserList(companyId));
+        }
+
+        [PerformanceAspect(3)]
         //[SecuredOperation("User.Update,Admin")]
         [CacheRemoveAspect("IUserService.Get")]
         public void Update(User user)
         {
             _userDal.Update(user);
+        }
+
+        [CacheRemoveAspect("IUserService.Get")]
+        public IResult UpdateResult(UserForRegisterToSecondAccountDto userForRegister)
+        {
+            var findUser = _userDal.Get(i => i.Id == userForRegister.Id);
+            findUser.Name = userForRegister.Name;
+            findUser.Email = userForRegister.Email;
+
+            if (userForRegister.Password != "")
+            {
+                byte[] passwordHash, passwordSalt;
+                HashingHelper.CreatePasswordHash(userForRegister.Password, out passwordHash, out passwordSalt);
+                findUser.PasswordHash = passwordHash;
+                findUser.PasswordSalt = passwordSalt;
+            }
+
+            _userDal.Update(findUser);
+            return new SuccessResult(Messages.UpdatedUser);
         }
     }
 }

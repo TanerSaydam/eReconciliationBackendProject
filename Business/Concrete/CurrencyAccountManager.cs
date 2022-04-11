@@ -29,7 +29,7 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("CurrencyAccountValidator.Add,Admin")]        
+        [SecuredOperation("CurrencyAccount.Add,Admin")]        
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         public IResult Add(CurrencyAccount currencyAccount)
@@ -39,7 +39,7 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("CurrencyAccountValidator.Add,Admin")]
+        [SecuredOperation("CurrencyAccount.Add,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         [TransactionScopeAspect]
@@ -89,7 +89,7 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("CurrencyAccountValidator.Delete,Admin")]
+        [SecuredOperation("CurrencyAccount.Delete,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         public IResult Delete(CurrencyAccount currencyAccount)
         {
@@ -103,7 +103,7 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("CurrencyAccountValidator.Get,Admin")]
+        [SecuredOperation("CurrencyAccount.Get,Admin")]
         [CacheAspect(60)]
         public IDataResult<CurrencyAccount> Get(int id)
         {
@@ -111,7 +111,7 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("CurrencyAccountValidator.Get,Admin")]
+        [SecuredOperation("CurrencyAccount.Get,Admin")]
         [CacheAspect(60)]
         public IDataResult<CurrencyAccount> GetByCode(string code, int companyId)
         {
@@ -119,7 +119,7 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("CurrencyAccountValidator.GetList,Admin")]
+        [SecuredOperation("CurrencyAccount.GetList,Admin")]
         [CacheAspect(60)]
         public IDataResult<List<CurrencyAccount>> GetList(int companyId)
         {
@@ -127,7 +127,7 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("CurrencyAccountValidator.Update,Admin")]
+        [SecuredOperation("CurrencyAccount.Update,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         public IResult Update(CurrencyAccount currencyAccount)
