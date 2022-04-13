@@ -10,7 +10,7 @@ namespace Business.Constans
     {
         public static string AddedCompany = "Şirket kaydı başarıyla tamamlandı";
         public static string UpdatedCompany = "Şirket kaydı başarıyla güncellendi";
-        public static string CompanyAlreadyExists = "Bu şirket daha önce kaydedilmiş";
+        public static string CompanyAlreadyExists = "Bu şirket daha önce kaydedilmiş";        
 
         public static string UserNotFound = "Kullanıcı bulunamadı";
         public static string PasswordError = "Şifre yanlış";
@@ -21,7 +21,11 @@ namespace Business.Constans
         public static string MailAlreadyConfirm = "Mailiniz zaten onaylı. Tekrar gönderim yapılmadı";
         public static string MailConfirmTimeHasNotExpired = "Mail onayını 5 dakikada bir gönderebilirsiniz";
         public static string UpdatedUser = "Kullanıcı başarıyla güncellendi";
+        public static string DeletedUser = "Kullanıcı başarıyla silindi";
         public static string ChangedPassword = "Şifre başarıyla değiştirildi";
+        public static string DeletedUserCompanyReletionShip = "Kullanıcının şirket ile bağlantısı kesilmiştir";
+        public static string AddedUserCompanyReletionShip = "Kullanıcı ile şirket arasında bağlantı kuruldu";
+        public static string UpdatedUserTheme = "Tema başarıyla güncellendi";
 
         public static string MailParameterUpdated = "Mail parameterleri başarıyla güncellendi";
         public static string MailSendSucessful = "Mail başarıyla gönderildi";
@@ -57,8 +61,8 @@ namespace Business.Constans
         public static string DeletedOperationClaim = "Yetki başarıyla silindi";
 
         public static string AddedUserOperationClaim = "Kullanıcıya yetki başarıyla eklendi";
-        public static string UpdatedUserOperationClaim = "Kullanıcıya yetki başarıyla güncellendi";
-        public static string DeletedUserOperationClaim = "Kullanıcıya yetki başarıyla silindi";
+        public static string UpdatedUserOperationClaim = "Kullanıcı yetkisi başarıyla güncellendi";
+        public static string DeletedUserOperationClaim = "Kullanıcı yetkisi başarıyla silindi";
 
         public static string UpdateTermsAndConditions = "Sözleşme başarıyla güncellendi";
     }

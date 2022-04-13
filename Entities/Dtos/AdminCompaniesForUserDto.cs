@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Entities.Dtos
 {
-    public class CompanyDto : Company, IDto
-    {        
-        public int UserId { get; set; }
+    public class AdminCompaniesForUserDto : Company , IDto 
+    {
+        public bool IsTrue { get; set; }
     }
 }

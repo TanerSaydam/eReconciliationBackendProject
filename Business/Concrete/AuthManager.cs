@@ -27,10 +27,12 @@ namespace Business.Concrete
         private readonly IMailParameterService _mailParameterService;
         private readonly IMailService _mailService;
         private readonly IMailTemplateService _mailTemplateService;
-        private readonly IUserOperationClaimService _userOperarionClaimService;
-        private readonly IOperationClaimService _operarionClaimService;
-   
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper, ICompanyService companyService, IMailParameterService mailParameterService, IMailService mailService, IMailTemplateService mailTemplateService, IUserOperationClaimService userOperarionClaimService, IOperationClaimService operarionClaimService)
+        private readonly IUserOperationClaimService _userOperationClaimService;
+        private readonly IOperationClaimService _operationClaimService;
+        private readonly IUserReletionShipService _userReletionShipService;
+        private readonly IUserThemeOptionService _userThemeOptionService;
+
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, ICompanyService companyService, IMailParameterService mailParameterService, IMailService mailService, IMailTemplateService mailTemplateService, IUserOperationClaimService userOperarionClaimService, IOperationClaimService operarionClaimService, IUserReletionShipService userReletionShipService, IUserThemeOptionService userThemeOptionService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
@@ -38,8 +40,10 @@ namespace Business.Concrete
             _mailParameterService = mailParameterService;
             _mailService = mailService;
             _mailTemplateService = mailTemplateService;
-            _userOperarionClaimService = userOperarionClaimService;
-            _operarionClaimService = operarionClaimService;
+            _userOperationClaimService = userOperarionClaimService;
+            _operationClaimService = operarionClaimService;
+            _userReletionShipService = userReletionShipService;
+            _userThemeOptionService = userThemeOptionService;   
         }
 
         public IResult CompanyExists(Company company)
@@ -126,10 +130,10 @@ namespace Business.Concrete
                 PasswordSalt = user.PasswordSalt
             };
 
-            var operationClaims = _operarionClaimService.GetList().Data;
+            var operationClaims = _operationClaimService.GetList().Data;
             foreach (var operationClaim in operationClaims)
             {
-                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete" && !operationClaim.Name.Contains("UserOperationClaim"))
+                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete")
                 {
                     UserOperationClaim userOperation = new UserOperationClaim()
                     {
@@ -139,9 +143,19 @@ namespace Business.Concrete
                         OperationClaimId = operationClaim.Id,
                         UserId = user.Id
                     };
-                    _userOperarionClaimService.Add(userOperation);
+                    _userOperationClaimService.Add(userOperation);
                 }                
             }
+
+            UserThemeOption userThemeOption = new UserThemeOption()
+            {
+                UserId = user.Id,
+                SidenavColor = "primary",
+                SidenavType = "dark",
+                Mode = ""
+            };
+
+            _userThemeOptionService.Update(userThemeOption);
 
             SendConfirmEmail(user);
 
@@ -178,7 +192,8 @@ namespace Business.Concrete
             _userService.Update(user);
         }
 
-        public IDataResult<User> RegisterSecondAccount(UserForRegister userForRegister, string password, int companyId)
+        [TransactionScopeAspect]
+        public IDataResult<List<UserReletionshipDto>> RegisterSecondAccount(UserForRegister userForRegister, string password, int companyId, int adminUserId)
         {
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -199,7 +214,7 @@ namespace Business.Concrete
 
             _companyService.UserCompanyAdd(user.Id, companyId);
 
-            var operationClaims = _operarionClaimService.GetList().Data;
+            var operationClaims = _operationClaimService.GetList().Data;
             foreach (var operationClaim in operationClaims)
             {
                 if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete" && !operationClaim.Name.Contains("UserOperationClaim"))
@@ -212,13 +227,33 @@ namespace Business.Concrete
                         OperationClaimId = operationClaim.Id,
                         UserId = user.Id
                     };
-                    _userOperarionClaimService.Add(userOperation);
+                    _userOperationClaimService.Add(userOperation);
                 }
             }
 
+            UserReletionship userReletionship = new UserReletionship
+            {
+                UserUserId = user.Id,
+                AdminUserId = adminUserId
+            };
+
+            _userReletionShipService.Add(userReletionship);
+
+            var result = _userReletionShipService.GetListDto(adminUserId).Data;
+
+            UserThemeOption userThemeOption = new UserThemeOption()
+            {
+                UserId = user.Id,
+                SidenavColor = "primary",
+                SidenavType = "dark",
+                Mode = ""
+            };
+
+            _userThemeOptionService.Update(userThemeOption);
+
             SendConfirmEmail(user);
 
-            return new SuccesDataResult<User>(user, Messages.UserRegistered);
+            return new SuccesDataResult<List<UserReletionshipDto>>(result, Messages.UserRegistered);
         }
 
         public IResult Update(User user)

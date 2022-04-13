@@ -13,5 +13,6 @@ namespace DataAccess.Abstract
     {
         void UserCompanyAdd(int userId, int companyId);
         UserCompany GetCompany(int userId);
+        List<Company> GetListByUserId(int userId);
     }
 }

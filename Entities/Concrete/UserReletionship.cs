@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Dtos
+namespace Entities.Concrete
 {
-    public class UserForRegisterToSecondAccountDto : UserForRegister , IDto
+    public class UserReletionship : IEntity
     {
         public int Id { get; set; }
-        public int CompanyId { get; set; }
         public int AdminUserId { get; set; }
+        public int UserUserId { get; set; }
     }
 }

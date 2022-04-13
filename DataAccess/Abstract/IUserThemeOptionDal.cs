@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿using Core.DataAccess;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Dtos
+namespace DataAccess.Abstract
 {
-    public class CompanyDto : Company, IDto
-    {        
-        public int UserId { get; set; }
+    public interface IUserThemeOptionDal : IEntityRepository<UserThemeOption>
+    {
     }
 }

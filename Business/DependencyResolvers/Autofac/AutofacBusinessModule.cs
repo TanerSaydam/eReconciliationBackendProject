@@ -55,6 +55,9 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<TermsandConditionManager>().As<ITermsandConditionService>();
             builder.RegisterType<EfTermsandConditionDal>().As<ITermsandConditionDal>();
 
+            builder.RegisterType<UserThemeOptionManager>().As<IUserThemeOptionService>();
+            builder.RegisterType<EfUserThemeOptionDal>().As<IUserThemeOptionDal>();
+
             builder.RegisterType<OperationClaimManager>().As<IOperationClaimService>();
             builder.RegisterType<EfOperationClaimDal>().As<IOperationClaimDal>();
 
@@ -63,6 +66,12 @@ namespace Business.DependencyResolvers.Autofac
 
             builder.RegisterType<UserOperationClaimManager>().As<IUserOperationClaimService>();
             builder.RegisterType<EfUserOperationClaimDal>().As<IUserOperationClaimDal>();
+
+            builder.RegisterType<UserReletionShipManager>().As<IUserReletionShipService>();
+            builder.RegisterType<EfUserReletionShipDal>().As<IUserReletionshipDal>();
+
+            builder.RegisterType<UserCompanyManager>().As<IUserCompanyService>();
+            builder.RegisterType<EfUserCompanyDal>().As<IUserCompanyDal>();
 
             builder.RegisterType<AuthManager>().As<IAuthService>();            
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();

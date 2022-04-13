@@ -23,10 +23,15 @@ namespace Business.Concrete
 {
     public class CompanyManager : ICompanyService
     {
-        private readonly ICompanyDal _companyDal;        
-        public CompanyManager(ICompanyDal companyDal)
+        private readonly ICompanyDal _companyDal;   
+        private readonly IOperationClaimService _operationClaimService;
+        private readonly IUserOperationClaimService _userOperationClaimService;
+
+        public CompanyManager(ICompanyDal companyDal, IOperationClaimService operationClaimService, IUserOperationClaimService userOperationClaimService)
         {
             _companyDal = companyDal;
+            _operationClaimService = operationClaimService;
+            _userOperationClaimService = userOperationClaimService;
         }
 
         [CacheRemoveAspect("ICompanyService.Get")]
@@ -42,8 +47,38 @@ namespace Business.Concrete
         [TransactionScopeAspect]
         public IResult AddCompanyAndUserCompany(CompanyDto companyDto)
         {
-            _companyDal.Add(companyDto.Company);
-            _companyDal.UserCompanyAdd(companyDto.UserId, companyDto.Company.Id);
+            Company company = new Company()
+            {
+                Id = companyDto.Id,
+                Name = companyDto.Name,
+                TaxDepartment = companyDto.TaxDepartment,
+                TaxIdNumber = companyDto.TaxIdNumber,
+                IdentityNumber = companyDto.IdentityNumber,
+                Address = companyDto.Address,
+                AddedAt = companyDto.AddedAt,
+                IsActive = companyDto.IsActive
+            };
+
+            _companyDal.Add(company);
+            _companyDal.UserCompanyAdd(companyDto.UserId, company.Id);
+
+            var operationClaims = _operationClaimService.GetList().Data;
+            foreach (var operationClaim in operationClaims)
+            {
+                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete" && !operationClaim.Name.Contains("UserOperationClaim"))
+                {
+                    UserOperationClaim userOperation = new UserOperationClaim()
+                    {
+                        CompanyId = company.Id,
+                        AddedAt = DateTime.Now,
+                        IsActive = true,
+                        OperationClaimId = operationClaim.Id,
+                        UserId = companyDto.UserId
+                    };
+                    _userOperationClaimService.Add(userOperation);
+                }
+            }
+
             return new SuccessResult(Messages.AddedCompany);
         }
         public IResult CompanyExists(Company company)
@@ -72,6 +107,12 @@ namespace Business.Concrete
         public IDataResult<List<Company>> GetList()
         {
             return new SuccesDataResult<List<Company>>(_companyDal.GetList());
+        }
+
+        [CacheAspect(60)]
+        public IDataResult<List<Company>> GetListByUserId(int userId)
+        {
+            return new SuccesDataResult<List<Company>>(_companyDal.GetListByUserId(userId));
         }
 
         [PerformanceAspect(3)]

@@ -23,6 +23,27 @@ namespace DataAccess.Concrete.EntityFramework
             }
         }
 
+        public List<Company> GetListByUserId(int userId)
+        {
+            using (var context = new ContextDb())
+            {                
+                var result = from userCompany in context.UserCompanies.Where(p => p.UserId == userId)
+                             join company in context.Companies on userCompany.CompanyId equals company.Id
+                             select new Company
+                             {
+                                 Id = company.Id,
+                                 AddedAt = company.AddedAt,
+                                 Address = company.Address,
+                                 IdentityNumber = company.IdentityNumber,
+                                 IsActive = company.IsActive,
+                                 Name = company.Name,
+                                 TaxDepartment = company.TaxDepartment,
+                                 TaxIdNumber = company.TaxIdNumber
+                             };
+                return result.OrderBy(p => p.Name).ToList();
+            }
+        }
+
         public void UserCompanyAdd(int userId, int companyId)
         {
             using (var context = new ContextDb())
