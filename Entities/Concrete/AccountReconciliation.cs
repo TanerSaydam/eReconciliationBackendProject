@@ -18,7 +18,7 @@ namespace Entities.Concrete
         public decimal CurrencyDebit { get; set; }
         public decimal CurrencyCredit { get; set; }
         public bool IsSendEmail { get; set; }
-        public DateTime? SenEmailDate { get; set; }
+        public DateTime? SendEmailDate { get; set; }
         public bool? IsEmailRead { get; set; }
         public DateTime? EmailReadDate { get; set; }
         public bool? IsResultSucceed { get; set; }

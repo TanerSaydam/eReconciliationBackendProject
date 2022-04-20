@@ -57,6 +57,11 @@ namespace Business.Concrete
             return new SuccesDataResult<List<MailTemplate>>(_mailTemplateDal.GetList(m => m.CompanyId == companyId));
         }
 
+        public IDataResult<MailTemplate> GetByCompanyId(int companyId)
+        {
+            return new SuccesDataResult<MailTemplate>(_mailTemplateDal.Get(m => m.CompanyId == companyId));
+        }
+
         [CacheAspect(60)]
         public IDataResult<MailTemplate> GetByTemplateName(string name, int companyId)
         {
@@ -64,11 +69,20 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
-        [SecuredOperation("MailTemplate.update,Admin")]
+        [SecuredOperation("MailTemplate.Update,Admin")]
         [CacheRemoveAspect("IMailTemplateService.Get")]
         public IResult Update(MailTemplate mailTemplate)
         {
-            _mailTemplateDal.Update(mailTemplate);
+            var result = _mailTemplateDal.Get(p => p.CompanyId == mailTemplate.CompanyId);
+            if (result != null)
+            {
+                _mailTemplateDal.Update(mailTemplate);
+            }
+            else
+            {
+                mailTemplate.Id = 0;
+                _mailTemplateDal.Add(mailTemplate);
+            }            
             return new SuccessResult(Messages.MailTemplateUpdated);
         }
     }

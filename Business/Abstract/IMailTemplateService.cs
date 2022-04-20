@@ -14,6 +14,7 @@ namespace Business.Abstract
         IResult Update(MailTemplate mailTemplate);
         IResult Delete(MailTemplate mailTemplate);
         IDataResult<MailTemplate> Get(int id);
+        IDataResult<MailTemplate> GetByCompanyId(int companyId);
         IDataResult<MailTemplate> GetByTemplateName(string name, int companyId);
         IDataResult<List<MailTemplate>> GetAll(int companyId);
     }

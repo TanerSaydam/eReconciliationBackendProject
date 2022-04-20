@@ -46,7 +46,11 @@ namespace Business.Constans
 
         public static string AddedAccountReconciliationDetail = "Cari mutabakat detay kaydı başarıyla eklendi";
         public static string UpdatedAccountReconciliationDetail = "Cari mutabakat detay kaydı başarıyla güncellendi";
+        public static string UpdatedAccountReconciliationResult = "Cari mutabakat için sozlü mutabakat başarıyla işlendi";
+        public static string IsReconciliationAlreadySucceed = "Onaylı mutabakat için tekrar mail gonderemezsiniz";
         public static string DeletedAccountReconciliationDetail = "Cari mutabakat detay başarıyla silindi";
+
+        public static string ReconciliationResultSucceed = "Mutabakat cevabı başarıyla kaydedildi";
 
         public static string AddedBaBsReconciliation = "BaBs kaydı başarıyla eklendi";
         public static string UpdatedBaBsReconciliation = "BaBs kaydı başarıyla güncellendi";

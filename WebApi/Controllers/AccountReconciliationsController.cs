@@ -62,10 +62,21 @@ namespace WebApi.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpPost("delete")]
-        public IActionResult Delete(AccountReconciliation accountReconciliation)
+        [HttpPost("updateResult")]
+        public IActionResult UpdateResult(AccountReconciliation accountReconciliation)
+        {            
+            var result = _accountReconciliationService.Update(accountReconciliation);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("delete")]
+        public IActionResult Delete(int id)
         {
-            var result = _accountReconciliationService.Delete(accountReconciliation);
+            var result = _accountReconciliationService.Delete(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -95,11 +106,22 @@ namespace WebApi.Controllers
             return BadRequest(result.Message);
         }
 
-        //SendReconciliationMail(AccountReconciliationDto accountReconciliationDto)
-        [HttpPost("sendReconciliationMail")]
-        public IActionResult SendReconciliationMail(AccountReconciliationDto accountReconciliationDto)
+        [HttpGet("getCount")]
+        public IActionResult GetCount(int companyId)
         {
-            var result = _accountReconciliationService.SendReconciliationMail(accountReconciliationDto);
+            var result = _accountReconciliationService.GetCountDto(companyId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        //SendReconciliationMail(AccountReconciliationDto accountReconciliationDto)
+        [HttpGet("sendReconciliationMail")]
+        public IActionResult SendReconciliationMail(int id)
+        {
+            var result = _accountReconciliationService.SendReconciliationMail(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -111,6 +133,28 @@ namespace WebApi.Controllers
         public IActionResult GetByCode(string code)
         {
             var result = _accountReconciliationService.GetByCode(code);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getByCodeDto")]
+        public IActionResult GetByCodeDto(string code)
+        {
+            var result = _accountReconciliationService.GetByCodeDto(code);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("sendResult")]
+        public IActionResult sendResult(ReconciliationResultDto reconciliationResultDto)
+        {
+            var result = _accountReconciliationService.Result(reconciliationResultDto);
             if (result.Success)
             {
                 return Ok(result);

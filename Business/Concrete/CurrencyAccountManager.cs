@@ -129,6 +129,7 @@ namespace Business.Concrete
         [PerformanceAspect(3)]
         [SecuredOperation("CurrencyAccount.Update,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
+        [CacheRemoveAspect("IAccountReconciliationService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         public IResult Update(CurrencyAccount currencyAccount)
         {

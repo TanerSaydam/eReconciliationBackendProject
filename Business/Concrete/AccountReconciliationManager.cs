@@ -21,18 +21,20 @@ namespace Business.Concrete
     public class AccountReconciliationManager : IAccountReconciliationService
     {
         private readonly IAccountReconciliationDal _accountReconciliationDal;
+        private readonly IAccountReconciliationDetailService _accountReconciliationDetailService;
         private readonly ICurrencyAccountService _currencyAccountService;
         private readonly IMailService _mailService;
         private readonly IMailTemplateService _mailTemplateService;
         private readonly IMailParameterService _mailParameterService;
 
-        public AccountReconciliationManager(IAccountReconciliationDal accountReconciliationDal, ICurrencyAccountService currencyAccountService, IMailService mailService, IMailTemplateService mailTemplateService, IMailParameterService mailParameterService)
+        public AccountReconciliationManager(IAccountReconciliationDal accountReconciliationDal, ICurrencyAccountService currencyAccountService, IMailService mailService, IMailTemplateService mailTemplateService, IMailParameterService mailParameterService, IAccountReconciliationDetailService accountReconciliationDetailService)
         {
             _accountReconciliationDal = accountReconciliationDal;
             _currencyAccountService = currencyAccountService;
             _mailService = mailService;
             _mailTemplateService = mailTemplateService;
-            _mailParameterService = mailParameterService;   
+            _mailParameterService = mailParameterService;
+            _accountReconciliationDetailService = accountReconciliationDetailService;
         }
 
         [PerformanceAspect(3)]        
@@ -99,9 +101,17 @@ namespace Business.Concrete
         [PerformanceAspect(3)]
         [SecuredOperation("AccountReconciliation.Delete,Admin")]
         [CacheRemoveAspect("IAccountReconciliationService.Get")]
-        public IResult Delete(AccountReconciliation accountReconciliation)
+        [TransactionScopeAspect]
+        public IResult Delete(int id)
         {
-            _accountReconciliationDal.Delete(accountReconciliation);
+            var result = _accountReconciliationDal.Get(p => p.Id == id);
+            var resultDetails = _accountReconciliationDetailService.GetList(id).Data;
+            foreach (var detail in resultDetails)
+            {
+                _accountReconciliationDetailService.Delete(detail);
+            }
+
+            _accountReconciliationDal.Delete(result);
             return new SuccessResult(Messages.DeletedAccountReconciliation);
         }
 
@@ -112,11 +122,25 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
+        public IDataResult<AccountReconciliationDto> GetByCodeDto(string code)
+        {
+            return new SuccesDataResult<AccountReconciliationDto>(_accountReconciliationDal.GetByCodeDto(code));
+        }
+
+        [PerformanceAspect(3)]
         [SecuredOperation("AccountReconciliation.Get,Admin")]
         [CacheAspect(60)]
         public IDataResult<AccountReconciliation> GetById(int id)
         {
             return new SuccesDataResult<AccountReconciliation>(_accountReconciliationDal.Get(p => p.Id == id));
+        }
+
+        [PerformanceAspect(3)]
+        [SecuredOperation("AccountReconciliation.GetList,Admin")]
+        [CacheAspect(60)]
+        public IDataResult<AccountReconciliationsCountDto> GetCountDto(int companyId)
+        {
+            return new SuccesDataResult<AccountReconciliationsCountDto>(_accountReconciliationDal.GetCountDto(companyId));
         }
 
         [PerformanceAspect(3)]
@@ -143,10 +167,27 @@ namespace Business.Concrete
             return new SuccesDataResult<List<AccountReconciliationDto>>(_accountReconciliationDal.GetAllDto(companyId));
         }
 
+        [CacheRemoveAspect("IAccountReconciliationService.Get")]
+        public IResult Result(ReconciliationResultDto reconciliationResultDto)
+        {
+            var result = _accountReconciliationDal.Get(p => p.Id == reconciliationResultDto.Id);
+            result.IsResultSucceed = reconciliationResultDto.Result;
+            result.ResultDate = DateTime.Now;
+            result.ResultNote = "Cevaplayan: " + reconciliationResultDto.Name + " Not: " + reconciliationResultDto.Note;
+            _accountReconciliationDal.Update(result);
+            return new SuccessResult(Messages.ReconciliationResultSucceed);
+        }
+
         [PerformanceAspect(3)]
         [SecuredOperation("AccountReconciliation.SendMail,Admin")]
-        public IResult SendReconciliationMail(AccountReconciliationDto accountReconciliationDto)
+        public IResult SendReconciliationMail(int id)
         {
+            var accountReconciliationDto = _accountReconciliationDal.GetByIdDto(id);
+
+            if (accountReconciliationDto.IsResultSucceed == true)
+            {
+                return new ErrorResult(Messages.IsReconciliationAlreadySucceed);
+            }
             string subject = "Mutabakat Maili";
             string body = $"Şirket Adımız: {accountReconciliationDto.CompanyName} <br /> " +
                 $"Şirket Vergi Dairesi: {accountReconciliationDto.CompanyTaxDepartment} <br />" +
@@ -156,10 +197,10 @@ namespace Business.Concrete
                 $"Sizin Şirket Vergi Numarası: {accountReconciliationDto.AccountTaxIdNumber} - {accountReconciliationDto.AccountIdentityNumber} <br /><hr>" +
                 $"Borç: {accountReconciliationDto.CurrencyDebit} {accountReconciliationDto.CurrencyCode} <br />" +
                 $"Alacak: {accountReconciliationDto.CurrencyCredit} {accountReconciliationDto.CurrencyCode} <br />";
-            string link = "https://localhost:7220/api/AccountReconciliations/GetByCode?code=" + accountReconciliationDto.Guid;
+            string link = "http://localhost:4200/account-reconciliation-result/" + accountReconciliationDto.Guid;
             string linkDescription = "Mutabakatı Cevaplamak için Tıklayın";
 
-            var mailTemplate = _mailTemplateService.GetByTemplateName("Kayıt", 4);
+            var mailTemplate = _mailTemplateService.GetByTemplateName("Mutabakat", accountReconciliationDto.CompanyId);
             string templateBody = mailTemplate.Data.Value;
             templateBody = templateBody.Replace("{{title}}", subject);
             templateBody = templateBody.Replace("{{message}}", body);
@@ -188,6 +229,15 @@ namespace Business.Concrete
         {
             _accountReconciliationDal.Update(accountReconciliation);
             return new SuccessResult(Messages.UpdatedAccountReconciliation);
+        }
+
+        [PerformanceAspect(3)]
+        [SecuredOperation("AccountReconciliation.Update,Admin")]
+        [CacheRemoveAspect("IAccountReconciliationService.Get")]
+        public IResult UpdateResult(AccountReconciliation accountReconciliation)
+        {
+            _accountReconciliationDal.Update(accountReconciliation);
+            return new SuccessResult(Messages.UpdatedAccountReconciliationResult);
         }
     }
 }

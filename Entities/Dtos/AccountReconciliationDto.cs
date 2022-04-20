@@ -13,6 +13,7 @@ namespace Entities.Dtos
         public string CompanyTaxDepartment { get; set; }
         public string CompanyTaxIdNumber { get; set; }
         public string CompanyIdentityNumber { get; set; }
+        public string AccountCode { get; set; }
         public string AccountName { get; set; }
         public string AccountTaxDepartment { get; set; }
         public string AccountTaxIdNumber { get; set; }

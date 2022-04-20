@@ -12,5 +12,6 @@ namespace Business.Abstract
     {
         IResult Update(MailParameter mailParameter);
         IDataResult<MailParameter> Get(int companyId);
+        IResult ConnectionTest(int companyId);
     }
 }

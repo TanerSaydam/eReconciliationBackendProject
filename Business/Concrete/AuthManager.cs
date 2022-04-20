@@ -133,7 +133,7 @@ namespace Business.Concrete
             var operationClaims = _operationClaimService.GetList().Data;
             foreach (var operationClaim in operationClaims)
             {
-                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete")
+                if (operationClaim.Name != "Admin")
                 {
                     UserOperationClaim userOperation = new UserOperationClaim()
                     {
@@ -146,6 +146,13 @@ namespace Business.Concrete
                     _userOperationClaimService.Add(userOperation);
                 }                
             }
+
+            var mailTemplate = _mailTemplateService.GetByCompanyId(4).Data;
+
+            mailTemplate.Id = 0;
+            mailTemplate.Type = "Mutabakat";
+            mailTemplate.CompanyId = company.Id;
+            _mailTemplateService.Add(mailTemplate);
 
             UserThemeOption userThemeOption = new UserThemeOption()
             {
@@ -217,7 +224,7 @@ namespace Business.Concrete
             var operationClaims = _operationClaimService.GetList().Data;
             foreach (var operationClaim in operationClaims)
             {
-                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete" && !operationClaim.Name.Contains("UserOperationClaim"))
+                if (operationClaim.Name != "Admin")
                 {
                     UserOperationClaim userOperation = new UserOperationClaim()
                     {

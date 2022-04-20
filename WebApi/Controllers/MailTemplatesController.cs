@@ -26,5 +26,27 @@ namespace WebApi.Controllers
             }
             return BadRequest(result.Message);
         }
+
+        [HttpPost("update")]
+        public IActionResult Update(MailTemplate mailTemplate)
+        {
+            var result = _mailTemplateService.Update(mailTemplate);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getByCompanyId")]
+        public IActionResult GetByCompanyId(int companyId)
+        {
+            var result = _mailTemplateService.GetByCompanyId(companyId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
     }
 }

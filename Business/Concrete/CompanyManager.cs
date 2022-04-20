@@ -26,12 +26,14 @@ namespace Business.Concrete
         private readonly ICompanyDal _companyDal;   
         private readonly IOperationClaimService _operationClaimService;
         private readonly IUserOperationClaimService _userOperationClaimService;
+        private readonly IMailTemplateService _mailTemplateService;
 
-        public CompanyManager(ICompanyDal companyDal, IOperationClaimService operationClaimService, IUserOperationClaimService userOperationClaimService)
+        public CompanyManager(ICompanyDal companyDal, IOperationClaimService operationClaimService, IUserOperationClaimService userOperationClaimService, IMailTemplateService mailTemplateService)
         {
             _companyDal = companyDal;
             _operationClaimService = operationClaimService;
             _userOperationClaimService = userOperationClaimService;
+            _mailTemplateService = mailTemplateService;
         }
 
         [CacheRemoveAspect("ICompanyService.Get")]
@@ -65,7 +67,7 @@ namespace Business.Concrete
             var operationClaims = _operationClaimService.GetList().Data;
             foreach (var operationClaim in operationClaims)
             {
-                if (operationClaim.Name != "Admin" && operationClaim.Name != "MailParameter" && operationClaim.Name != "MailTemplete" && !operationClaim.Name.Contains("UserOperationClaim"))
+                if (operationClaim.Name != "Admin")
                 {
                     UserOperationClaim userOperation = new UserOperationClaim()
                     {
@@ -78,6 +80,12 @@ namespace Business.Concrete
                     _userOperationClaimService.Add(userOperation);
                 }
             }
+
+            var mailTemplate = _mailTemplateService.GetByCompanyId(4).Data;
+            mailTemplate.Id = 0;
+            mailTemplate.Type = "Mutabakat";
+            mailTemplate.CompanyId = company.Id;
+            _mailTemplateService.Add(mailTemplate);
 
             return new SuccessResult(Messages.AddedCompany);
         }
