@@ -28,6 +28,7 @@ namespace DataAccess.Concrete.EntityFramework
                     smtp.UseDefaultCredentials = false;
                     smtp.Credentials = new NetworkCredential(sendMailDto.mailParameter.Email, sendMailDto.mailParameter.Password);
                     smtp.EnableSsl = sendMailDto.mailParameter.SSL;
+                    smtp.Port = sendMailDto.mailParameter.Port;
                     smtp.Send(mail);
                 }
             }
