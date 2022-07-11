@@ -1,8 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constans;
-using Business.ValidaitonRules.FluentValidation;
 using Core.Aspects.Autofac.Transaction;
-using Core.CrossCuttingConcerns.Validation;
 using Core.Entities.Concrete;
 using Core.Utilities.Hashing;
 using Core.Utilities.Results.Abstract;
@@ -10,12 +8,6 @@ using Core.Utilities.Results.Concrete;
 using Core.Utilities.Security.JWT;
 using Entities.Concrete;
 using Entities.Dtos;
-using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -43,7 +35,7 @@ namespace Business.Concrete
             _userOperationClaimService = userOperarionClaimService;
             _operationClaimService = operarionClaimService;
             _userReletionShipService = userReletionShipService;
-            _userThemeOptionService = userThemeOptionService;   
+            _userThemeOptionService = userThemeOptionService;
         }
 
         public IResult CompanyExists(Company company)
@@ -90,10 +82,10 @@ namespace Business.Concrete
             return new SuccesDataResult<User>(userToCheck, Messages.SuccessfulLogin);
 
         }
-                    
+
         [TransactionScopeAspect]
         public IDataResult<UserCompanyDto> Register(UserForRegister userForRegister, string password, Company company)
-        {            
+        {
 
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -108,7 +100,7 @@ namespace Business.Concrete
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Name = userForRegister.Name
-            };            
+            };
 
             _userService.Add(user);
             _companyService.Add(company);
@@ -144,7 +136,7 @@ namespace Business.Concrete
                         UserId = user.Id
                     };
                     _userOperationClaimService.Add(userOperation);
-                }                
+                }
             }
 
             var mailTemplate = _mailTemplateService.GetByCompanyId(4).Data;
@@ -184,7 +176,8 @@ namespace Business.Concrete
             templateBody = templateBody.Replace("{{linkDescription}}", linkDescription);
 
 
-            var mailParameter = _mailParameterService.Get(4);
+            var mailParameter = _mailParameterService.Get(1018);
+
             SendMailDto sendMailDto = new SendMailDto()
             {
                 mailParameter = mailParameter.Data,
@@ -271,7 +264,7 @@ namespace Business.Concrete
 
         public IResult UserExists(string email)
         {
-            if (_userService.GetByMail(email)!= null)
+            if (_userService.GetByMail(email) != null)
             {
                 return new ErrorResult(Messages.UserAlreadyExists);
             }
@@ -338,7 +331,7 @@ namespace Business.Concrete
                 body = templateBody
             };
 
-            _mailService.SendMail(sendMailDto);            
+            _mailService.SendMail(sendMailDto);
 
             return new SuccessResult(Messages.MailSendSucessful);
         }

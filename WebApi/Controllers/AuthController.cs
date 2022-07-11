@@ -1,9 +1,6 @@
 ﻿using Business.Abstract;
 using Core.Utilities.Hashing;
-using Core.Utilities.Results.Concrete;
-using Entities.Concrete;
 using Entities.Dtos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -24,17 +21,17 @@ namespace WebApi.Controllers
         [HttpPost("register")]
         public IActionResult Register(UserAndCompanyRegisterDto userAndCompanyRegister)
         {
-            var userExists = _authService.UserExists(userAndCompanyRegister.UserForRegister.Email);
-            if (!userExists.Success)
-            {
-                return BadRequest(userExists.Message);
-            }
+            //var userExists = _authService.UserExists(userAndCompanyRegister.UserForRegister.Email);
+            //if (!userExists.Success)
+            //{
+            //    return BadRequest(userExists.Message);
+            //}
 
-            var companyExists = _authService.CompanyExists(userAndCompanyRegister.Company);
-            if (!companyExists.Success)
-            {
-                return BadRequest(userExists.Message);
-            }
+            //var companyExists = _authService.CompanyExists(userAndCompanyRegister.Company);
+            //if (!companyExists.Success)
+            //{
+            //    return BadRequest(userExists.Message);
+            //}
 
             var registerResult = _authService.Register(userAndCompanyRegister.UserForRegister, userAndCompanyRegister.UserForRegister.Password, userAndCompanyRegister.Company);
 
@@ -56,12 +53,12 @@ namespace WebApi.Controllers
                 return BadRequest(userExists.Message);
             }
 
-            var registerResult = _authService.RegisterSecondAccount(userForRegister, userForRegister.Password, userForRegister.CompanyId, userForRegister.AdminUserId);            
+            var registerResult = _authService.RegisterSecondAccount(userForRegister, userForRegister.Password, userForRegister.CompanyId, userForRegister.AdminUserId);
             if (registerResult.Success)
             {
                 return Ok(registerResult);
             }
-            
+
             return BadRequest(registerResult.Message);
         }
 
@@ -87,7 +84,7 @@ namespace WebApi.Controllers
                     return BadRequest(result);
                 }
                 return BadRequest("Gelen onay mailini cevaplamalısınız. Mail adresinizi onaylamadan sisteme giriş yapamazsınız!");
-                
+
             }
             return BadRequest("Kullanıcı pasif durumda. Aktif etmek için yöneticinize danışın");
 
@@ -98,7 +95,7 @@ namespace WebApi.Controllers
         public IActionResult ChangeCompany(int userId, int companyId)
         {
             var user = _authService.GetById(userId).Data;
-            var result = _authService.CreateAccessToken(user,companyId);
+            var result = _authService.CreateAccessToken(user, companyId);
             if (result.Success)
             {
                 return Ok(result);
@@ -151,7 +148,7 @@ namespace WebApi.Controllers
         [HttpGet("forgotPassword")]
         public IActionResult ForgotPassword(string email)
         {
-            var user = _authService.GetByEmail(email).Data;            
+            var user = _authService.GetByEmail(email).Data;
 
             if (user == null)
             {
@@ -189,7 +186,7 @@ namespace WebApi.Controllers
                 DateTime date1 = DateTime.Now.AddHours(-1);
                 DateTime date2 = DateTime.Now;
                 if (result.SendDate >= date1 && result.SendDate <= date2)
-                {                    
+                {
                     return Ok(true);
                 }
                 else
@@ -207,7 +204,7 @@ namespace WebApi.Controllers
         public IActionResult ChangePasswordToForgotPassword(ForgotPasswordDto passwordDto)
         {
             var forgotPasswordResult = _forgotPasswordService.GetForgotPassword(passwordDto.Value);
-            forgotPasswordResult.IsActive = false;  
+            forgotPasswordResult.IsActive = false;
             _forgotPasswordService.Update(forgotPasswordResult);
             var userResult = _authService.GetById(forgotPasswordResult.UserId).Data;
             byte[] passwordHash, passwordSalt;
@@ -216,7 +213,7 @@ namespace WebApi.Controllers
             userResult.PasswordSalt = passwordSalt;
             var result = _authService.ChangePassword(userResult);
             if (result.Success)
-            {                
+            {
                 return Ok(result);
             }
             return BadRequest(result.Message);

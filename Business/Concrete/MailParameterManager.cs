@@ -7,16 +7,6 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -24,7 +14,7 @@ namespace Business.Concrete
     {
         private readonly IMailParameterDal _mailParameterDal;
         private readonly IMailService _mailService;
-        
+
 
         public MailParameterManager(IMailParameterDal mailParameterDal, IMailService mailService)
         {
@@ -45,14 +35,14 @@ namespace Business.Concrete
             };
 
             _mailService.SendMail(sendMailDto);
-           
+
             return new SuccessResult(Messages.MailSendSucessful);
         }
 
-        [CacheAspect(60)]
+        //[CacheAspect(60)]
         public IDataResult<MailParameter> Get(int companyId)
         {
-            return new SuccesDataResult<MailParameter>(_mailParameterDal.Get(m=> m.CompanyId == companyId));
+            return new SuccesDataResult<MailParameter>(_mailParameterDal.Get(m => m.CompanyId == companyId));
         }
 
         [PerformanceAspect(3)]
@@ -66,7 +56,7 @@ namespace Business.Concrete
                 _mailParameterDal.Add(mailParameter);
             }
             else
-            {                
+            {
                 _mailParameterDal.Update(mailParameter);
             }
             return new SuccessResult(Messages.MailParameterUpdated);
